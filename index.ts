@@ -2,7 +2,7 @@ import { serverTiming } from "@elysiajs/server-timing";
 import { swagger } from "@elysiajs/swagger";
 import { logger } from "@grotto/logysia";
 import { Elysia, t } from "elysia";
-import nodemailer, { createTransport } from "nodemailer";
+import { createTransport } from "nodemailer";
 
 const port = Number.parseInt(process.env.PORT || "3000", 10);
 console.log(`PORT: ${port}`);
@@ -26,7 +26,7 @@ r.post(
 	async ({ body, headers }) => {
 		if (headers["x-api-key"] !== apiKey) throw new Error("Unauthorized");
 		const { host, port, secure } = body;
-		const transporter = nodemailer.createTransport({ host, port, secure });
+		const transporter = createTransport({ host, port, secure });
 		await transporter.sendMail({
 			from: body.from,
 			to: body.to,
@@ -35,6 +35,7 @@ r.post(
 			subject: body.subject,
 			text: body.text,
 			html: body.html,
+			attachments: body.attachments,
 		});
 	},
 	{
@@ -52,6 +53,15 @@ r.post(
 			subject: t.String(),
 			text: t.String(),
 			html: t.String(),
+			attachments: t.Optional(
+				t.Array(
+					t.Object({
+						filename: t.String(),
+						content: t.String(),
+						encoding: t.Optional(t.String({ default: "base64" })),
+					}),
+				),
+			),
 		}),
 	},
 );
