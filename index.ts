@@ -28,6 +28,7 @@ r.post(
 		const result = await transporter.sendMail({
 			from: body.from,
 			to: body.to,
+			cc: body.cc,
 			bcc: body.bcc,
 			subject: body.subject,
 			text: body.text,
