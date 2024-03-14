@@ -27,7 +27,7 @@ r.post(
 		if (headers["x-api-key"] !== apiKey) throw new Error("Unauthorized");
 		const { host, port, secure } = body;
 		const transporter = createTransport({ host, port, secure });
-		await transporter.sendMail({
+		const result = await transporter.sendMail({
 			from: body.from,
 			to: body.to,
 			bcc: body.bcc,
@@ -37,11 +37,13 @@ r.post(
 			html: body.html,
 			attachments: body.attachments,
 		});
+		return result;
 	},
 	{
 		headers: t.Object({
 			"x-api-key": t.String(),
 		}),
+		type: "application/json",
 		body: t.Object({
 			host: t.String(),
 			port: t.Optional(t.Number({ default: 25 })),
