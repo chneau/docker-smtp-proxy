@@ -1,0 +1,17 @@
+{
+	"name": "docker-smtp-proxy",
+	"module": "index.ts",
+	"type": "module",
+	"scripts": {
+		"start": "bun index.ts",
+		"dev": "bun --watch index.ts",
+		"upgrade": "npm-check-updates --upgrade && bun install",
+		"lint": "biome lint .",
+		"check": "biome check --apply-unsafe .",
+		"format": "biome format --write ."
+	},
+	"devDependencies": {
+		"@types/bun": "^1.0.8",
+		"typescript": "^5.4.2"
+	}
+}
