@@ -2,6 +2,7 @@ import { serverTiming } from "@elysiajs/server-timing";
 import { swagger } from "@elysiajs/swagger";
 import { logger } from "@grotto/logysia";
 import { Elysia, t } from "elysia";
+import { compression } from "elysia-compression";
 import { createTransport } from "nodemailer";
 import { bodyType, errorType, headersType, responseType } from "./types";
 
@@ -14,6 +15,7 @@ console.log(`API_KEY: ${apiKey.slice(0, 4)}...`);
 const r = new Elysia();
 r.use(logger({ logIP: true }));
 r.use(swagger());
+r.use(compression());
 r.use(serverTiming());
 
 r.post(
@@ -25,7 +27,7 @@ r.post(
 			port: body.port ?? 25,
 			secure: body.secure ?? false,
 		});
-		const result = await transporter.sendMail({
+		await transporter.sendMail({
 			from: body.from,
 			to: body.to,
 			cc: body.cc,
@@ -38,7 +40,7 @@ r.post(
 				encoding: x.encoding ?? "base64",
 			})),
 		});
-		return result;
+		return "ok";
 	},
 	{
 		headers: headersType,
