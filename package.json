@@ -5,7 +5,7 @@
 	"scripts": {
 		"start": "bun index.ts",
 		"dev": "bun --watch index.ts",
-		"build": "bun build index.ts --target=bun --outdir=dist --minify-syntax",
+		"build": "bun build index.ts --target=bun --outdir=dist",
 		"upgrade": "npm-check-updates --upgrade && bun install",
 		"lint": "biome lint .",
 		"check": "biome check --apply-unsafe .",
