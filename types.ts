@@ -1,3 +1,4 @@
+import { ModelToYup } from "@sinclair/typebox-codegen";
 import { t } from "elysia";
 
 const allowedPrioritiesType = [
@@ -55,7 +56,7 @@ export const errorType = t.Object(
 export const bodyType = t.Object(
 	{
 		host: t.String({ description: "The host" }),
-		port: t.Optional(t.Numeric({ default: 25, description: "The port" })),
+		port: t.Optional(t.Number({ default: 25, description: "The port" })),
 		secure: t.Optional(t.Boolean({ default: false, description: "Secure" })),
 		from: t.String({ description: "The FROM" }),
 		to: t.String({ description: "The TO" }),
