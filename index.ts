@@ -94,6 +94,10 @@ r.post(
 				),
 			),
 		}),
+		detail: {
+			summary: "Send an email",
+			description: "Send an email using the provided parameters",
+		},
 	},
 );
 
