@@ -40,7 +40,7 @@ r.post(
 				encoding: x.encoding ?? "base64",
 			})),
 		});
-		return "ok";
+		return { message: "ok" };
 	},
 	{
 		headers: headersType,

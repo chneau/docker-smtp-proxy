@@ -1,6 +1,8 @@
 import { t } from "elysia";
 
-export const responseType = t.String({ description: "The response" });
+export const responseType = t.Object({
+	message: t.String({ description: "The message" }),
+});
 
 export const errorType = t.Object(
 	{
