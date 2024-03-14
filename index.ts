@@ -21,6 +21,15 @@ const allowedPriorities = [
 	t.Literal("low"),
 ];
 
+const evenlopeType = t.Object({
+	from: t.Union([t.String(), t.Literal(false)]),
+	to: t.Array(t.String()),
+});
+
+const addressesType = t.Array(
+	t.Union([t.String(), t.Object({ name: t.String(), address: t.String() })]),
+);
+
 r.post(
 	"/",
 	async ({ body, headers }) => {
@@ -49,6 +58,20 @@ r.post(
 		headers: t.Object({
 			"x-api-key": t.String(),
 		}),
+		response: {
+			200: t.Object({
+				envelope: evenlopeType,
+				messageId: t.String(),
+				accepted: addressesType,
+				rejected: addressesType,
+				pending: addressesType,
+				response: t.String(),
+			}),
+			400: t.Object({
+				name: t.String(),
+				message: t.String(),
+			}),
+		},
 		type: "application/json",
 		body: t.Object({
 			host: t.String(),
