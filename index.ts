@@ -15,7 +15,7 @@ r.use(logger({ logIP: true }));
 r.use(swagger());
 r.use(serverTiming());
 
-const allowedPriorities = [
+const allowedPrioritiesType = [
 	t.Literal("high"),
 	t.Literal("normal"),
 	t.Literal("low"),
@@ -80,7 +80,7 @@ r.post(
 			from: t.String(),
 			to: t.String(),
 			bcc: t.Optional(t.String()),
-			priority: t.Optional(t.Union(allowedPriorities)),
+			priority: t.Optional(t.Union(allowedPrioritiesType)),
 			subject: t.String(),
 			text: t.Optional(t.String()),
 			html: t.String(),
