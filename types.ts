@@ -32,16 +32,17 @@ export const responseType = t.Object(
 			...addressesType,
 			description: "An array of addresses that were rejected for delivery",
 		},
-		pending: {
+		pending: t.Optional({
 			...addressesType,
 			description: "An array of addresses that were temporarily rejected",
-		},
+		}),
 		response: t.String({
 			description: "The last SMTP response from the server",
 		}),
 	},
 	{
 		description: "The email was sent successfully",
+		additionalProperties: true,
 	},
 );
 
