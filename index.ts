@@ -73,27 +73,30 @@ r.post(
 			}),
 		},
 		type: "application/json",
-		body: t.Object({
-			host: t.String(),
-			port: t.Optional(t.Number({ default: 25 })),
-			secure: t.Optional(t.Boolean({ default: false })),
-			from: t.String(),
-			to: t.String(),
-			bcc: t.Optional(t.String()),
-			priority: t.Optional(t.Union(allowedPrioritiesType)),
-			subject: t.String(),
-			text: t.Optional(t.String()),
-			html: t.String(),
-			attachments: t.Optional(
-				t.Array(
-					t.Object({
-						filename: t.String(),
-						content: t.String(),
-						encoding: t.Optional(t.String({ default: "base64" })),
-					}),
+		body: t.Object(
+			{
+				host: t.String(),
+				port: t.Optional(t.Numeric({ default: 25 })),
+				secure: t.Optional(t.Boolean({ default: false })),
+				from: t.String(),
+				to: t.String(),
+				bcc: t.Optional(t.String()),
+				priority: t.Optional(t.Union(allowedPrioritiesType)),
+				subject: t.String(),
+				text: t.Optional(t.String()),
+				html: t.String(),
+				attachments: t.Optional(
+					t.Array(
+						t.Object({
+							filename: t.String(),
+							content: t.String(),
+							encoding: t.Optional(t.String({ default: "base64" })),
+						}),
+					),
 				),
-			),
-		}),
+			},
+			{ required: ["host", "from", "to", "subject", "html"] },
+		),
 		detail: {
 			summary: "Send an email",
 			description: "Send an email using the provided parameters",
