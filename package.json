@@ -1,17 +1,25 @@
 {
-	"name": "docker-smtp-proxy",
-	"module": "index.ts",
-	"type": "module",
-	"scripts": {
-		"start": "bun index.ts",
-		"dev": "bun --watch index.ts",
-		"upgrade": "npm-check-updates --upgrade && bun install",
-		"lint": "biome lint .",
-		"check": "biome check --apply-unsafe .",
-		"format": "biome format --write ."
-	},
-	"devDependencies": {
-		"@types/bun": "^1.0.8",
-		"typescript": "^5.4.2"
-	}
+  "name": "docker-smtp-proxy",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun index.ts",
+    "dev": "bun --watch index.ts",
+    "upgrade": "npm-check-updates --upgrade && bun install",
+    "lint": "biome lint .",
+    "check": "biome check --apply-unsafe .",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@types/bun": "^1.0.8",
+    "@types/nodemailer": "^6.4.14",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@elysiajs/server-timing": "^0.8.0",
+    "@elysiajs/swagger": "^0.8.5",
+    "@grotto/logysia": "^0.1.1",
+    "elysia": "^0.8.17",
+    "nodemailer": "^6.9.12"
+  }
 }
