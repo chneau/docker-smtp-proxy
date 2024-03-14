@@ -1,8 +1,13 @@
-FROM oven/bun:alpine
-USER 1000
+FROM oven/bun:alpine AS build
 WORKDIR /app
 COPY package.json .
 COPY bun.lockb .
 RUN bun install
 COPY . .
-ENTRYPOINT exec bun index.ts
+RUN bun run build
+
+FROM oven/bun:alpine AS final
+USER 1000
+WORKDIR /app
+COPY --from=build /app/dist .
+ENTRYPOINT exec bun index.js
