@@ -25,8 +25,11 @@ r.post(
 	"/",
 	async ({ body, headers }) => {
 		if (headers["x-api-key"] !== apiKey) throw new Error("Unauthorized");
-		const { host, port, secure } = body;
-		const transporter = createTransport({ host, port, secure });
+		const transporter = createTransport({
+			host: body.host,
+			port: body.port ?? 25,
+			secure: body.secure ?? false,
+		});
 		const result = await transporter.sendMail({
 			from: body.from,
 			to: body.to,
@@ -35,7 +38,10 @@ r.post(
 			subject: body.subject,
 			text: body.text,
 			html: body.html,
-			attachments: body.attachments,
+			attachments: body.attachments?.map((x) => ({
+				...x,
+				encoding: x.encoding ?? "base64",
+			})),
 		});
 		return result;
 	},
@@ -53,7 +59,7 @@ r.post(
 			bcc: t.Optional(t.String()),
 			priority: t.Optional(t.Union(allowedPriorities)),
 			subject: t.String(),
-			text: t.String(),
+			text: t.Optional(t.String()),
 			html: t.String(),
 			attachments: t.Optional(
 				t.Array(
