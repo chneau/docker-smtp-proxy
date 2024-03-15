@@ -2,6 +2,7 @@ import { t } from "elysia";
 
 export const responseType = t.Object({
 	message: t.String({ description: "The message" }),
+	json: t.Optional(t.String({ description: "The JSON" })),
 });
 
 export const errorType = t.Object(

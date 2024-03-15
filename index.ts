@@ -40,7 +40,7 @@ r.post(
 				encoding: x.encoding ?? "base64",
 			})),
 		});
-		return { message: "ok" };
+		return { message: "ok", json: JSON.stringify(body, null, 2) };
 	},
 	{
 		headers: headersType,
