@@ -27,7 +27,7 @@ r.post(
 			port: body.port ?? 25,
 			secure: body.secure ?? false,
 		});
-		await transporter.sendMail({
+		const result = await transporter.sendMail({
 			from: body.from,
 			to: body.to,
 			cc: body.cc,
@@ -40,7 +40,7 @@ r.post(
 				encoding: x.encoding ?? "base64",
 			})),
 		});
-		return { message: "ok", json: JSON.stringify(body, null, 2) };
+		return { message: "ok", json: result };
 	},
 	{
 		headers: headersType,
