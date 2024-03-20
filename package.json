@@ -1,28 +1,28 @@
 {
-  "name": "docker-smtp-proxy",
-  "module": "index.ts",
-  "type": "module",
-  "scripts": {
-    "start": "bun index.ts",
-    "dev": "bun --watch index.ts",
-    "build": "bun build index.ts --target=bun --outdir=dist",
-    "upgrade": "npm-check-updates --upgrade && bun install",
-    "lint": "biome lint .",
-    "check": "biome check --apply-unsafe .",
-    "format": "biome format --write .",
-    "publish": "docker build --pull --push --tag ghcr.io/chneau/smtp-proxy ."
-  },
-  "devDependencies": {
-    "@types/bun": "^1.0.8",
-    "@types/nodemailer": "^6.4.14",
-    "typescript": "^5.4.2"
-  },
-  "dependencies": {
-    "@elysiajs/server-timing": "^0.8.0",
-    "@elysiajs/swagger": "^0.8.5",
-    "@grotto/logysia": "^0.1.1",
-    "elysia": "^0.8.17",
-    "elysia-compression": "^0.0.7",
-    "nodemailer": "^6.9.12"
-  }
+	"name": "docker-smtp-proxy",
+	"module": "index.ts",
+	"type": "module",
+	"scripts": {
+		"start": "bun index.ts",
+		"dev": "bun --watch index.ts",
+		"build": "bun build index.ts --target=bun --outdir=dist",
+		"upgrade": "npm-check-updates --upgrade && bun install",
+		"lint": "biome lint .",
+		"check": "biome check --apply-unsafe .",
+		"format": "biome format --write .",
+		"publish": "docker build --pull --push --tag ghcr.io/chneau/smtp-proxy ."
+	},
+	"devDependencies": {
+		"@types/bun": "^1.0.10",
+		"@types/nodemailer": "^6.4.14",
+		"typescript": "^5.4.3"
+	},
+	"dependencies": {
+		"@elysiajs/server-timing": "^1.0.2",
+		"@elysiajs/swagger": "^1.0.3",
+		"@grotto/logysia": "^0.1.1",
+		"elysia": "^1.0.7",
+		"elysia-compression": "^0.0.7",
+		"nodemailer": "^6.9.13"
+	}
 }
