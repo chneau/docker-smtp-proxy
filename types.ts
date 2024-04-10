@@ -20,6 +20,7 @@ export const bodyType = t.Object(
 		secure: t.Optional(t.Boolean({ default: false, description: "Secure" })),
 		from: t.String({ description: "The FROM" }),
 		to: t.String({ description: "The TO" }),
+		replyTo: t.Optional(t.String({ description: "Reply To" })),
 		cc: t.Optional(t.String({ description: "The CC" })),
 		bcc: t.Optional(t.String({ description: "The BCC" })),
 		subject: t.String({ description: "The subject" }),
