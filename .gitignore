@@ -1,3 +1,6 @@
 node_modules
 dist
 test.ts
+.vs
+.vscode
+package-lock.json

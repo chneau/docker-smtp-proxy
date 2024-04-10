@@ -32,6 +32,7 @@ r.post(
 			to: body.to,
 			cc: body.cc,
 			bcc: body.bcc,
+			replyTo: body.replyTo,
 			subject: body.subject,
 			text: body.text,
 			html: body.html,
