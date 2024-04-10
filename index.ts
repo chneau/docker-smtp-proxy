@@ -1,7 +1,6 @@
 import { serverTiming } from "@elysiajs/server-timing";
 import { swagger } from "@elysiajs/swagger";
-import { logger } from "@grotto/logysia";
-import { Elysia, t } from "elysia";
+import { Elysia } from "elysia";
 import { compression } from "elysia-compression";
 import { createTransport } from "nodemailer";
 import { bodyType, errorType, headersType, responseType } from "./types";
@@ -13,7 +12,6 @@ if (!apiKey) throw new Error("API_KEY is required");
 console.log(`API_KEY: ${apiKey.slice(0, 4)}...`);
 
 const r = new Elysia();
-r.use(logger({ logIP: true }));
 r.use(swagger());
 r.use(compression());
 r.use(serverTiming());
