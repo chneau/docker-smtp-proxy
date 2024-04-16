@@ -11,9 +11,9 @@
 		"publish": "docker build --pull --push --tag ghcr.io/chneau/smtp-proxy ."
 	},
 	"devDependencies": {
-		"@types/bun": "^1.0.12",
+		"@types/bun": "^1.1.0",
 		"@types/nodemailer": "^6.4.14",
-		"typescript": "^5.4.4"
+		"typescript": "^5.4.5"
 	},
 	"dependencies": {
 		"@elysiajs/server-timing": "^1.0.2",

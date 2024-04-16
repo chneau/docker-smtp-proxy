@@ -41,7 +41,7 @@ export const bodyType = t.Object(
 			),
 		),
 	},
-	{ description: "The email parameters" },
+	{ description: "The email parameters", additionalProperties: true },
 );
 
 export const headersType = t.Object(
