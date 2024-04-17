@@ -5,11 +5,13 @@ import { compression } from "elysia-compression";
 import { createTransport } from "nodemailer";
 import { bodyType, errorType, headersType, responseType } from "./types";
 
-const port = Number.parseInt(process.env.PORT || "3000", 10);
+const port = Number.parseInt(Bun.env.PORT || "3000", 10);
 console.log(`PORT: ${port}`);
-const apiKey = process.env.API_KEY;
+const apiKey = Bun.env.API_KEY;
 if (!apiKey) throw new Error("API_KEY is required");
 console.log(`API_KEY: ${apiKey.slice(0, 4)}...`);
+const logging = (Bun.env.LOGGING ?? "true") === "true";
+console.log(`LOGGING: ${logging}`);
 
 const r = new Elysia();
 r.use(swagger());
@@ -20,6 +22,7 @@ r.post(
 	"/",
 	async ({ body, headers }) => {
 		if (headers["x-api-key"] !== apiKey) throw new Error("Unauthorized");
+		if (logging) console.log(body);
 		const transporter = createTransport({
 			host: body.host,
 			port: body.port ?? 25,
