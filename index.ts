@@ -22,7 +22,13 @@ r.post(
 	"/",
 	async ({ body, headers }) => {
 		if (headers["x-api-key"] !== apiKey) throw new Error("Unauthorized");
-		if (logging) console.log(body);
+		if (logging) {
+			console.log({
+				...body,
+				attachments: undefined,
+				attachmentsCount: body.attachments?.length,
+			});
+		}
 		const transporter = createTransport({
 			host: body.host,
 			port: body.port ?? 25,
