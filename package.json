@@ -6,21 +6,22 @@
 		"start": "bun index.ts",
 		"dev": "bun --watch index.ts",
 		"build": "bun build index.ts --target=bun --outdir=dist",
-		"upgrade": "npm-check-updates --upgrade --install=always --packageManager=bun",
+		"upgrade": "bun update --latest",
 		"lint": "tsc --noEmit",
-		"check": "biome check --write --unsafe .",
-		"publish": "docker build --pull --push --tag ghcr.io/chneau/smtp-proxy ."
+		"check": "deno fmt --use-tabs --quiet; oxlint --fix-dangerously --quiet; timeout 3s biome check --write --unsafe .",
+		"publish": "docker build --pull --push --tag ghcr.io/chneau/smtp-proxy .",
+		"all": "bun run upgrade; bun run check; bun run lint"
 	},
 	"devDependencies": {
-		"@types/bun": "^1.1.6",
-		"@types/nodemailer": "^6.4.15",
-		"typescript": "^5.5.4"
+		"@types/bun": "^1.2.18",
+		"@types/nodemailer": "^6.4.17",
+		"typescript": "^5.8.3"
 	},
 	"dependencies": {
-		"@elysiajs/server-timing": "^1.1.0",
-		"@elysiajs/swagger": "^1.1.0",
-		"elysia": "^1.1.4",
+		"@elysiajs/server-timing": "^1.3.0",
+		"@elysiajs/swagger": "^1.3.1",
+		"elysia": "^1.3.5",
 		"elysia-compression": "^0.0.7",
-		"nodemailer": "^6.9.14"
+		"nodemailer": "^7.0.5"
 	}
 }
