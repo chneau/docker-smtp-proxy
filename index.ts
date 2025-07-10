@@ -1,70 +1,116 @@
-import { serverTiming } from "@elysiajs/server-timing";
-import { swagger } from "@elysiajs/swagger";
-import { Elysia } from "elysia";
-import { compression } from "elysia-compression";
+import "./fixCompression";
+import { swaggerUI } from "@hono/swagger-ui";
+import { Scalar } from "@scalar/hono-api-reference";
+import type { Serve } from "bun";
+import { type ErrorHandler, Hono } from "hono";
+import { compress } from "hono/compress";
+import { cors } from "hono/cors";
+import { csrf } from "hono/csrf";
+import { showRoutes } from "hono/dev";
+import { etag } from "hono/etag";
+import { HTTPException } from "hono/http-exception";
+import { logger } from "hono/logger";
+import { requestId } from "hono/request-id";
+import { timing } from "hono/timing";
+import { trimTrailingSlash } from "hono/trailing-slash";
+import { describeRoute, openAPISpecs } from "hono-openapi";
+import { resolver, validator as zValidator } from "hono-openapi/zod";
 import { createTransport } from "nodemailer";
-import { bodyType, errorType, headersType, responseType } from "./types";
+import { bodyType, responseType } from "./types";
 
-const port = Number.parseInt(Bun.env.PORT || "3000", 10);
-console.log(`PORT: ${port}`);
 const apiKey = Bun.env.API_KEY;
 if (!apiKey) throw new Error("API_KEY is required");
 console.log(`API_KEY: ${apiKey.slice(0, 4)}...`);
-const logging = (Bun.env.LOGGING ?? "true") === "true";
-console.log(`LOGGING: ${logging}`);
 
-const r = new Elysia();
-r.use(swagger());
-r.use(compression());
-r.use(serverTiming());
+const errorHandler: ErrorHandler = (err, c) => {
+	console.log("=== Caught Error ===");
+	if (err instanceof HTTPException) {
+		return c.text(err.message, err.status);
+	}
+	console.error(err);
+	return c.text(err.message, 500);
+};
 
-r.post(
-	"/",
-	async ({ body, headers }) => {
-		if (headers["x-api-key"] !== apiKey) throw new Error("Unauthorized");
-		if (logging) {
+const app = new Hono()
+	.onError(errorHandler)
+	.use(logger())
+	.use(etag())
+	.use(timing({ crossOrigin: true }))
+	.use(cors())
+	.use(csrf())
+	.use(trimTrailingSlash())
+	.use(compress())
+	.use(requestId())
+	.post(
+		"/",
+		describeRoute({
+			description: "Send an email using the provided parameters",
+			summary: "Send an email",
+			responses: {
+				200: {
+					description: "Successful response",
+					content: {
+						"application/json": { schema: resolver(responseType) },
+					},
+				},
+			},
+		}),
+		zValidator("json", bodyType),
+		async (c) => {
+			if (c.req.header("x-api-key") !== apiKey) {
+				throw new Error("Unauthorized");
+			}
+			const body = c.req.valid("json");
 			console.log({
 				...body,
 				attachments: undefined,
 				attachmentsCount: body.attachments?.length,
 			});
-		}
-		const transporter = createTransport({
-			host: body.host,
-			port: body.port ?? 25,
-			secure: body.secure ?? false,
-		});
-		const result = await transporter.sendMail({
-			from: body.from,
-			to: body.to,
-			cc: body.cc,
-			bcc: body.bcc,
-			replyTo: body.replyTo,
-			subject: body.subject,
-			text: body.text,
-			html: body.html,
-			attachments: body.attachments?.map((x) => ({
-				...x,
-				encoding: x.encoding ?? "base64",
-			})),
-		});
-		return { message: "ok", json: result };
-	},
-	{
-		headers: headersType,
-		response: { 200: responseType, 400: errorType },
-		type: "application/json",
-		body: bodyType,
-		detail: {
-			summary: "Send an email",
-			description: "Send an email using the provided parameters",
+			const transporter = createTransport({
+				host: body.host,
+				port: body.port ?? 25,
+				secure: body.secure ?? false,
+			});
+			const result = await transporter.sendMail({
+				from: body.from,
+				to: body.to,
+				cc: body.cc,
+				bcc: body.bcc,
+				replyTo: body.replyTo,
+				subject: body.subject,
+				text: body.text,
+				html: body.html,
+				attachments: body.attachments?.map((x) => ({
+					...x,
+					encoding: x.encoding ?? "base64",
+				})),
+			});
+			return c.json({ message: "ok", json: result });
 		},
-	},
+	)
+	.get("/swagger", swaggerUI({ url: "/doc" }))
+	.get("/scalar", Scalar({ url: "/doc" }));
+
+app.get(
+	"/doc",
+	openAPISpecs(app, {
+		documentation: {
+			info: {
+				title: "Hono",
+				version: "1.0.0",
+				description: "API for greeting users",
+			},
+			servers: [
+				{
+					url: "http://localhost:3000",
+					description: "Local server",
+				},
+			],
+		},
+	}),
 );
 
-const url = `http://localhost:${port}`;
-console.log(`Server      : ${url}`);
-console.log(`Swagger     : ${url}/swagger`);
-console.log(`SwaggerJson : ${url}/swagger/json`);
+showRoutes(app);
 
-r.listen(port);
+export default app satisfies Serve;
+export type ServerType = typeof app;

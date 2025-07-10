@@ -1,52 +1,44 @@
-import { t } from "elysia";
+import { z } from "zod";
 
-export const responseType = t.Object({
-	message: t.String({ description: "The message" }),
-	json: t.Optional(t.Any({ description: "The JSON" })),
+export const responseType = z.object({
+	message: z.string().describe("The message"),
+	json: z.any().optional().describe("The JSON"),
 });
 
-export const errorType = t.Object(
-	{
-		name: t.String({ description: "The error name" }),
-		message: t.String({ description: "The error message" }),
-	},
-	{ description: "Bad Request" },
-);
+export const bodyType = z
+	.object({
+		host: z.string().describe("The host"),
+		port: z.number().default(25).describe("The port").optional(),
+		secure: z.boolean().default(false).describe("Secure").optional(),
+		from: z.string().describe("The FROM"),
+		to: z.string().describe("The TO"),
+		replyTo: z.string().describe("Reply To").optional(),
+		cc: z.string().describe("The CC").optional(),
+		bcc: z.string().describe("The BCC").optional(),
+		subject: z.string().describe("The subject"),
+		text: z.string().describe("The text content").optional(),
+		html: z.string().describe("The HTML content"),
+		attachments: z
+			.array(
+				z
+					.object({
+						filename: z.string().describe("The filename"),
+						content: z.string().describe("The content"),
+						encoding: z
+							.string()
+							.default("base64")
+							.describe("The encoding")
+							.optional(),
+					})
+					.describe("The attachment"),
+			)
+			.optional(),
+	})
+	.describe("The email parameters")
+	.catchall(z.unknown());
 
-export const bodyType = t.Object(
-	{
-		host: t.String({ description: "The host" }),
-		port: t.Optional(t.Number({ default: 25, description: "The port" })),
-		secure: t.Optional(t.Boolean({ default: false, description: "Secure" })),
-		from: t.String({ description: "The FROM" }),
-		to: t.String({ description: "The TO" }),
-		replyTo: t.Optional(t.String({ description: "Reply To" })),
-		cc: t.Optional(t.String({ description: "The CC" })),
-		bcc: t.Optional(t.String({ description: "The BCC" })),
-		subject: t.String({ description: "The subject" }),
-		text: t.Optional(t.String({ description: "The text content" })),
-		html: t.String({ description: "The HTML content" }),
-		attachments: t.Optional(
-			t.Array(
-				t.Object(
-					{
-						filename: t.String({ description: "The filename" }),
-						content: t.String({ description: "The content" }),
-						encoding: t.Optional(
-							t.String({ default: "base64", description: "The encoding" }),
-						),
-					},
-					{ description: "The attachment" },
-				),
-			),
-		),
-	},
-	{ description: "The email parameters", additionalProperties: true },
-);
-
-export const headersType = t.Object(
-	{
-		"x-api-key": t.String({ description: "The API key" }),
-	},
-	{ description: "The headers" },
-);
+export const headersType = z
+	.object({
+		"x-api-key": z.string().describe("The API key"),
+	})
+	.describe("The headers");
