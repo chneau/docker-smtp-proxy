@@ -33,7 +33,7 @@ const errorHandler: ErrorHandler = (err, c) => {
 
 const app = new Hono()
 	.onError(errorHandler)
-	.use(logger())
+	.use(logger((x) => x.startsWith("-") && console.log(x)))
 	.use(etag())
 	.use(timing({ crossOrigin: true }))
 	.use(cors())
