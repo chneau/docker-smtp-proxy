@@ -36,9 +36,3 @@ export const bodyType = z
 	})
 	.describe("The email parameters")
 	.catchall(z.unknown());
-
-export const headersType = z
-	.object({
-		"x-api-key": z.string().describe("The API key"),
-	})
-	.describe("The headers");

@@ -1,7 +1,6 @@
 import "./fixCompression";
 import { swaggerUI } from "@hono/swagger-ui";
 import { Scalar } from "@scalar/hono-api-reference";
-import type { Serve } from "bun";
 import { type ErrorHandler, Hono } from "hono";
 import { compress } from "hono/compress";
 import { cors } from "hono/cors";
@@ -13,8 +12,12 @@ import { logger } from "hono/logger";
 import { requestId } from "hono/request-id";
 import { timing } from "hono/timing";
 import { trimTrailingSlash } from "hono/trailing-slash";
-import { describeRoute, openAPISpecs } from "hono-openapi";
-import { resolver, validator as zValidator } from "hono-openapi/zod";
+import {
+	describeRoute,
+	openAPIRouteHandler,
+	resolver,
+	validator,
+} from "hono-openapi";
 import { createTransport } from "nodemailer";
 import { bodyType, responseType } from "./types";
 
@@ -55,7 +58,7 @@ const app = new Hono()
 				},
 			},
 		}),
-		zValidator("json", bodyType),
+		validator("json", bodyType),
 		async (c) => {
 			if (c.req.header("x-api-key") !== apiKey) {
 				throw new Error("Unauthorized");
@@ -93,7 +96,7 @@ const app = new Hono()
 
 app.get(
 	"/doc",
-	openAPISpecs(app, {
+	openAPIRouteHandler(app, {
 		documentation: {
 			info: {
 				title: "Hono",
@@ -112,5 +115,5 @@ app.get(
 
 showRoutes(app);
 
-export default app satisfies Serve;
+export default app;
 export type ServerType = typeof app;
