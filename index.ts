@@ -28,10 +28,10 @@ console.log(`API_KEY: ${apiKey.slice(0, 4)}...`);
 const errorHandler: ErrorHandler = (err, c) => {
 	console.log("=== Caught Error ===");
 	if (err instanceof HTTPException) {
-		return c.text(err.message, err.status);
+		return c.json({ message: err.message }, err.status);
 	}
 	console.error(err);
-	return c.text(err.message, 500);
+	return c.json({ message: err.message }, 500);
 };
 
 const app = new Hono()
