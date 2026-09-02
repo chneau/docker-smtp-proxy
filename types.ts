@@ -10,6 +10,13 @@ export const bodyType = z
 		host: z.string().describe("The host"),
 		port: z.number().default(25).describe("The port").optional(),
 		secure: z.boolean().default(false).describe("Secure").optional(),
+		auth: z
+			.object({
+				user: z.string().describe("SMTP username"),
+				pass: z.string().describe("SMTP password"),
+			})
+			.describe("SMTP authentication credentials")
+			.optional(),
 		from: z.string().describe("The FROM"),
 		to: z.string().describe("The TO"),
 		replyTo: z.string().describe("Reply To").optional(),

@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import "./fixCompression";
 import { swaggerUI } from "@hono/swagger-ui";
 import { Scalar } from "@scalar/hono-api-reference";
@@ -25,6 +26,15 @@ const apiKey = Bun.env.API_KEY;
 if (!apiKey) throw new Error("API_KEY is required");
 console.log(`API_KEY: ${apiKey.slice(0, 4)}...`);
 
+const apiKeyBuffer = Buffer.from(apiKey);
+
+const isAuthorized = (providedKey: string | undefined): boolean => {
+	if (!providedKey) return false;
+	const providedBuffer = Buffer.from(providedKey);
+	if (providedBuffer.length !== apiKeyBuffer.length) return false;
+	return timingSafeEqual(providedBuffer, apiKeyBuffer);
+};
+
 const errorHandler: ErrorHandler = (err, c) => {
 	console.log("=== Caught Error ===");
 	if (err instanceof HTTPException) {
@@ -44,6 +54,24 @@ const app = new Hono()
 	.use(trimTrailingSlash())
 	.use(compress())
 	.use(requestId())
+	.get(
+		"/healthz",
+		describeRoute({
+			description: "Healthcheck endpoint",
+			summary: "Healthcheck",
+			responses: {
+				200: {
+					description: "Service is healthy",
+					content: {
+						"application/json": {
+							schema: resolver(responseType),
+						},
+					},
+				},
+			},
+		}),
+		(c) => c.json({ message: "ok" }),
+	)
 	.post(
 		"/",
 		describeRoute({
@@ -56,16 +84,20 @@ const app = new Hono()
 						"application/json": { schema: resolver(responseType) },
 					},
 				},
+				401: {
+					description: "Unauthorized",
+				},
 			},
 		}),
 		validator("json", bodyType),
 		async (c) => {
-			if (c.req.header("x-api-key") !== apiKey) {
-				throw new Error("Unauthorized");
+			if (!isAuthorized(c.req.header("x-api-key"))) {
+				throw new HTTPException(401, { message: "Unauthorized" });
 			}
 			const body = c.req.valid("json");
 			console.log({
 				...body,
+				auth: body.auth ? { user: body.auth.user, pass: "***" } : undefined,
 				attachments: undefined,
 				attachmentsCount: body.attachments?.length,
 			});
@@ -73,6 +105,7 @@ const app = new Hono()
 				host: body.host,
 				port: body.port ?? 25,
 				secure: body.secure ?? false,
+				auth: body.auth,
 			});
 			const result = await transporter.sendMail({
 				from: body.from,
@@ -99,9 +132,9 @@ app.get(
 	openAPIRouteHandler(app, {
 		documentation: {
 			info: {
-				title: "Hono",
+				title: "SMTP Proxy API",
 				version: "1.0.0",
-				description: "API for greeting users",
+				description: "HTTP to SMTP Proxy Service",
 			},
 			servers: [
 				{
