@@ -1,0 +1,176 @@
+{
+	"openapi": "3.1.0",
+	"info": {
+		"title": "SMTP Proxy API",
+		"description": "HTTP to SMTP Proxy Service",
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:3000",
+			"description": "Local server"
+		}
+	],
+	"paths": {
+		"/healthz": {
+			"get": {
+				"operationId": "getHealthz",
+				"description": "Healthcheck endpoint",
+				"summary": "Healthcheck",
+				"responses": {
+					"200": {
+						"description": "Service is healthy",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"description": "The message"
+										},
+										"json": {
+											"description": "The JSON"
+										}
+									},
+									"required": ["message"]
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/": {
+			"post": {
+				"operationId": "postIndex",
+				"description": "Send an email using the provided parameters",
+				"summary": "Send an email",
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"description": "The message"
+										},
+										"json": {
+											"description": "The JSON"
+										}
+									},
+									"required": ["message"]
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					}
+				},
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"host": {
+										"type": "string",
+										"description": "The host"
+									},
+									"port": {
+										"default": 25,
+										"description": "The port",
+										"type": "number"
+									},
+									"secure": {
+										"default": false,
+										"description": "Secure",
+										"type": "boolean"
+									},
+									"auth": {
+										"type": "object",
+										"properties": {
+											"user": {
+												"type": "string",
+												"description": "SMTP username"
+											},
+											"pass": {
+												"type": "string",
+												"description": "SMTP password"
+											}
+										},
+										"required": ["user", "pass"],
+										"description": "SMTP authentication credentials"
+									},
+									"from": {
+										"type": "string",
+										"description": "The FROM"
+									},
+									"to": {
+										"type": "string",
+										"description": "The TO"
+									},
+									"replyTo": {
+										"type": "string",
+										"description": "Reply To"
+									},
+									"cc": {
+										"type": "string",
+										"description": "The CC"
+									},
+									"bcc": {
+										"type": "string",
+										"description": "The BCC"
+									},
+									"subject": {
+										"type": "string",
+										"description": "The subject"
+									},
+									"text": {
+										"type": "string",
+										"description": "The text content"
+									},
+									"html": {
+										"type": "string",
+										"description": "The HTML content"
+									},
+									"attachments": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"filename": {
+													"type": "string",
+													"description": "The filename"
+												},
+												"content": {
+													"type": "string",
+													"description": "The content"
+												},
+												"encoding": {
+													"default": "base64",
+													"description": "The encoding",
+													"type": "string"
+												}
+											},
+											"required": ["filename", "content"],
+											"description": "The attachment"
+										}
+									}
+								},
+								"required": ["host", "from", "to", "subject", "html"],
+								"additionalProperties": {}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {}
+}

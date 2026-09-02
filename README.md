@@ -127,6 +127,43 @@ services:
 
 ---
 
+## 🛠️ Generating Client SDKs
+
+The full OpenAPI 3.1 schema is saved directly in the repository as
+[`openapi.json`](./openapi.json) (and served at `/doc`). You can generate
+type-safe API clients for TypeScript, Go, Python, etc.:
+
+### TypeScript / Fetch Client (using `openapi-typescript`)
+
+```bash
+# Generate TypeScript types
+bunx openapi-typescript ./openapi.json -o smtp-proxy-client.d.ts
+```
+
+### Multi-language Client (using OpenAPI Generator)
+
+```bash
+# Generate Python SDK
+bunx @openapitools/openapi-generator-cli generate \
+  -i openapi.json \
+  -g python \
+  -o ./clients/python
+
+# Generate Go SDK
+bunx @openapitools/openapi-generator-cli generate \
+  -i openapi.json \
+  -g go \
+  -o ./clients/go
+```
+
+To regenerate the schema file at any time:
+
+```bash
+bun run openapi
+```
+
+---
+
 ## 🧪 Testing Locally
 
 Run automated typechecks and the test suite:
