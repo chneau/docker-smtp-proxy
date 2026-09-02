@@ -1,9 +1,20 @@
-node_modules
-dist
+.git
 .github
 .gitignore
-Dockerfile
-README.md
+.dockerignore
+.vs
+.vscode
+
+node_modules
+dist
+out
+build
+
+openapi.json
 test.ts
 test.sh
+Dockerfile
+README.md
+*.log
+
 

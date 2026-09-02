@@ -1,5 +1,4 @@
 import { timingSafeEqual } from "node:crypto";
-import "./fixCompression";
 import { swaggerUI } from "@hono/swagger-ui";
 import { Scalar } from "@scalar/hono-api-reference";
 import { type ErrorHandler, Hono } from "hono";
