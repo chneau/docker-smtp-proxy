@@ -3,4 +3,6 @@ dist
 test.ts
 .vs
 .vscode
-package-lock.json
+package-lock.jsonprivate/
+
+private/
