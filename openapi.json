@@ -11,6 +11,7 @@
 			"description": "Local server"
 		}
 	],
+	"components": {},
 	"paths": {
 		"/healthz": {
 			"get": {
@@ -63,6 +64,28 @@
 										}
 									},
 									"required": ["message"]
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"enum": [false]
+										},
+										"error": {
+											"type": "array",
+											"items": {}
+										},
+										"data": {}
+									},
+									"required": ["success", "error", "data"]
 								}
 							}
 						}
@@ -171,6 +194,5 @@
 				}
 			}
 		}
-	},
-	"components": {}
+	}
 }
