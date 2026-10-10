@@ -76,6 +76,15 @@ const app = new Hono()
 		describeRoute({
 			description: "Send an email using the provided parameters",
 			summary: "Send an email",
+			parameters: [
+				{
+					name: "x-api-key",
+					in: "header",
+					required: true,
+					description: "The API key",
+					schema: { type: "string" },
+				},
+			],
 			responses: {
 				200: {
 					description: "Successful response",
